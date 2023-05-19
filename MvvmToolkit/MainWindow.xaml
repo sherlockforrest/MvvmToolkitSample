@@ -1,0 +1,61 @@
+﻿<Window
+    x:Class="MvvmToolkit.MainWindow"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:local="clr-namespace:MvvmToolkit"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    Title="MainWindow"
+    Width="800"
+    Height="450"
+    d:DataContext="{d:DesignInstance local:MainWindowViewModel}"
+    mc:Ignorable="d">
+    <!--<Window.DataContext>
+        <local:MainWindowViewModel />
+    </Window.DataContext>-->
+    <Window.Resources>
+        <local:TaskResultConverter x:Key="TaskResultConverter" />
+        <local:BoolToVisibleConverter x:Key="BoolToVisibleConverter" />
+    </Window.Resources>
+    <Grid>
+        <StackPanel>
+            <TextBox
+                x:Name="Message"
+                Width="200"
+                Height="50"
+                Text="{Binding Name, UpdateSourceTrigger=PropertyChanged}" />
+            <Button
+                Width="200"
+                Height="50"
+                Margin="5"
+                Command="{Binding SendCommand}"
+                CommandParameter="{Binding Text, ElementName=Message}"
+                Content="发送消息" />
+            <TextBlock Margin="5">
+                <Run Text="Task status:" />
+                <Run Text="{Binding LoadCommand.ExecutionTask.Status, Mode=OneWay}" />
+                <LineBreak />
+                <Run Text="Result:" />
+                <Run Text="{Binding LoadCommand.ExecutionTask, Converter={StaticResource TaskResultConverter}, Mode=OneWay}" />
+            </TextBlock>
+            <!--  IsIndeterminate="True" 一直处在滚动状态  -->
+            <ProgressBar
+                Width="200"
+                Height="20"
+                Margin="5"
+                IsIndeterminate="True"
+                Visibility="{Binding LoadCommand.IsRunning, Converter={StaticResource BoolToVisibleConverter}, Mode=OneWay}" />
+            <Button
+                Width="200"
+                Height="50"
+                Margin="5"
+                Command="{Binding LoadCommand}"
+                Content="AsyncCommand" />
+            <Button
+                Width="200"
+                Height="50"
+                Command="{Binding LoadCancelCommand}"
+                Content="CancelCommand" />
+        </StackPanel>
+    </Grid>
+</Window>
